@@ -1,0 +1,8 @@
+## Interface: 120000
+## Title: Money Flow
+## Notes: Track your gold income and expenses.
+## Author: Pellew
+## Version: 1.0.0
+## SavedVariables: MoneyFlowConfig
+
+Money Flow.lua
