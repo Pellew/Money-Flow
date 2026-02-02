@@ -26,5 +26,4 @@ Slash commands:
 
 Money Flow is designed to be simple, transparent, and reliable — showing exactly what happens to your gold during a play session, nothing more.
 
-Made by Pellew# Money-Flow
-An wow addon to track money flow
+Made by Pellew
