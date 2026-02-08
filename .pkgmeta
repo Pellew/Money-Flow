@@ -1,13 +1,10 @@
 package-as: MoneyFlow
-
 curse-id: 1452163
 
-
-
-
 ignore:
-    - README.md
-    - .git/
-    - .github/
-    - .vscode/
-    - .pkgmeta
+  - README.md
+  - .git/
+  - .github/
+  - .vscode/
+  - .gitignore
+  - LICENSE
