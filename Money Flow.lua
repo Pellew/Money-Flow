@@ -13,12 +13,17 @@
 --==========================================================
 MoneyFlowDB = MoneyFlowDB or {}
 MoneyFlowDB.settingsKeys = MoneyFlowDB.settingsKeys or {}
--- Default: open with bags (set to true/false as you like)
+
+-- Default settings
 if MoneyFlowDB.settingsKeys.openWithBags == nil then
     MoneyFlowDB.settingsKeys.openWithBags = true
 end
 
-print("Money Flow Addon Loaded")
+-- Default settings
+if MoneyFlowDB.settingsKeys.anchorToBags == nil then
+    MoneyFlowDB.settingsKeys.anchorToBags = true
+end
+
 
 --==========================================================
 -- Debug
@@ -41,8 +46,6 @@ local function IsFrameObject(obj)
     local ok, isFrame = pcall(obj.IsObjectType, obj, "Frame")
     return ok and isFrame
 end
-
-
 
 local function SafeIsShown(obj)
     if not IsFrameObject(obj) or not obj.IsShown then return false end
@@ -73,6 +76,12 @@ local function OpenWithBagsEnabled()
     return MoneyFlowDB
         and MoneyFlowDB.settingsKeys
         and MoneyFlowDB.settingsKeys.openWithBags == true
+end
+
+local function AnchorToBagsEnable()
+    return MoneyFlowDB
+        and MoneyFlowDB.settingsKeys
+        and MoneyFlowDB.settingsKeys.anchorToBags == true
 end
 
 --==========================================================
@@ -155,7 +164,7 @@ mainFrame:RegisterForDrag("LeftButton")
 mainFrame:SetScript("OnDragStart", function(self)
     self:StartMoving()
     -- only store user placement if NOT opening with bags mode
-    if self.SetUserPlaced and not OpenWithBagsEnabled() then
+    if self.SetUserPlaced and not AnchorToBagsEnable() then
         self:SetUserPlaced(true)
     end
 end)
@@ -430,7 +439,7 @@ end
 local function AnchorToFrame(frameToAnchorTo)
     dprint("anchor target:", SafeName(frameToAnchorTo))
 
-    if not IsFrameObject(frameToAnchorTo) then
+    if not IsFrameObject(frameToAnchorTo) or not MoneyFlowDB.settingsKeys.anchorToBags then
         return false
     end
 
@@ -454,9 +463,7 @@ local function AnchorToFrame(frameToAnchorTo)
     end
 
     -- Force above bag UI
-    mainFrame:SetFrameStrata("TOOLTIP")
-    mainFrame:SetFrameLevel(1)
-    mainFrame:SetToplevel(true)
+
     mainFrame:SetClampedToScreen(true)
 
     mainFrame:ClearAllPoints()
@@ -464,8 +471,8 @@ local function AnchorToFrame(frameToAnchorTo)
         mainFrame:SetUserPlaced(false)
     end
 
-    mainFrame:SetPoint("BOTTOMLEFT", frameToAnchorTo, "TOPLEFT", 0, 10)
-    mainFrame:Raise()
+    mainFrame:SetPoint(MoneyFlowDB.anchorPointMainFrame, frameToAnchorTo, MoneyFlowDB.anchorPointBagFrame, 0, 10)
+
 
     return true
 end
@@ -642,6 +649,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
         lastMoney = GetMoney()
         RefreshUI()
         -- NOTE: We do NOT install bag hooks on login (lazy mode)
+        print("|cff00ff00Money Flow|r addon ready.")
     elseif event == "PLAYER_MONEY" then
         local currentMoney = GetMoney()
         if lastMoney then
