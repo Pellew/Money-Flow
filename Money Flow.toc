@@ -5,5 +5,6 @@
 ## Version: 2.0.0
 ## SavedVariables: MoneyFlowDB
 
-Money Flow.lua
 Settings.lua
+Money Flow.lua
+
