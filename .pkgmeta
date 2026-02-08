@@ -1,5 +1,5 @@
 package-as: MoneyFlow
-curse-id: 1452163
+
 
 ignore:
   - README.md
