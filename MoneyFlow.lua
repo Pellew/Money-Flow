@@ -1,5 +1,5 @@
 --==========================================================
--- Money Flow - Version 2.0.6
+-- Money Flow - Version 2.0.7
 --==========================================================
 -- Highlights:
 --  - NO bag hook install on login (lazy install when bags are toggled)
@@ -55,12 +55,14 @@ end
 
 local function SafeName(obj)
     if not obj then return "nil" end
-    if type(obj) ~= "table" then return tostring(obj) end
+    local t = type(obj)
+    if t ~= "table" and t ~= "userdata" then return tostring(obj) end
     if not obj.GetName then return "<?> (no GetName)" end
     local ok, name = pcall(obj.GetName, obj)
     if ok and name then return name end
     return "<?> (bad GetName)"
 end
+
 
 local function SafeGetPoint(obj, index)
     if not IsFrameObject(obj) or not obj.GetPoint then return nil end
@@ -278,10 +280,14 @@ RefreshUI()
 --==========================================================
 
 local function SafeGetName(obj)
-    if not obj or type(obj) ~= "table" or not obj.GetName then return nil end
+    if not obj then return nil end
+    local t = type(obj)
+    if t ~= "table" and t ~= "userdata" then return nil end
+    if not obj.GetName then return nil end
     local ok, name = pcall(obj.GetName, obj)
     return ok and name or nil
 end
+
 
 local function SafeChildren(parent)
     if not parent or not parent.GetChildren then return {} end
@@ -329,6 +335,44 @@ local BagProviders = {
             end
         end,
     },
+    {
+        name = "Bagnon",
+        isLoaded = function()
+            return _G.BagnonInventory1 ~= nil or _G.BagnonFrameinventory ~= nil
+        end,
+        getFrame = function()
+            -- Primær (det du ser i fstack)
+            if IsFrameObject(_G.BagnonInventory1) then
+                return _G.BagnonInventory1
+            end
+
+            -- Fallback (andre builds)
+            if IsFrameObject(_G.BagnonFrameinventory) then
+                return _G.BagnonFrameinventory
+            end
+        end,
+        resolveAnchor = function(frame) return frame end,
+        fallbackScan = function()
+            -- Find den viste inventory frame (BagnonInventory1/2/3...)
+            for _, child in ipairs(SafeChildren(UIParent)) do
+                local n = SafeGetName(child)
+                if n and n:match("^BagnonInventory%d+$") then
+                    if SafeIsShown(child) then
+                        return child
+                    end
+                end
+            end
+            -- ellers returnér bare en kandidat hvis den findes
+            for _, child in ipairs(SafeChildren(UIParent)) do
+                local n = SafeGetName(child)
+                if n and n:match("^BagnonInventory%d+$") then
+                    return child
+                end
+            end
+        end,
+    },
+
+
     {
         name = "ElvUI",
         isLoaded = function() return _G.ElvUI ~= nil or _G.ElvUI_ContainerFrame ~= nil end,
@@ -566,20 +610,31 @@ local function OnAnyBagsToggled()
 
     EnsureBagHooksInstalledSoon()
 
-    -- Try to show immediately (covers first open before OnShow hooks exist)
-    C_Timer.After(0, function()
+    -- Try to show soon (covers first open before OnShow hooks exist)
+    local tries = 0
+    local ticker
+    ticker = C_Timer.NewTicker(0.05, function()
+        tries = tries + 1
+
         local bagFrame = select(1, FindBagFrame(true))
-        local ok = false
         if IsFrameObject(bagFrame) then
-            ok = AnchorToFrame(bagFrame)
+            local ok = AnchorToFrame(bagFrame)
             if ok then
                 mainFrame:Show()
                 mainFrame:Raise()
+                dprint("Toggle -> Anchor ok = true (tries =", tries .. ")")
+                ticker:Cancel()
+                return
             end
         end
-        dprint("Toggle -> Anchor ok =", ok and "true" or "false")
+
+        if tries >= 20 then
+            dprint("Toggle -> Anchor ok = false (timeout, tries =", tries .. ")")
+            ticker:Cancel()
+        end
     end)
 end
+
 
 
 -- Hook Blizzard/global bag toggles (often still used by bag addons)
@@ -595,6 +650,9 @@ end
 -- BetterBags has its own toggle function/macro
 if BetterBags_ToggleBags then hooksecurefunc("BetterBags_ToggleBags", OnAnyBagsToggled) end
 if BetterBags_ToggleAllBags then hooksecurefunc("BetterBags_ToggleAllBags", OnAnyBagsToggled) end
+
+
+
 
 --==========================================================
 -- Slash commands
