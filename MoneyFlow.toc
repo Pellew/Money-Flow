@@ -6,5 +6,5 @@
 ## SavedVariables: MoneyFlowDB
 
 Settings.lua
-Money Flow.lua
+MoneyFlow.lua
 
