@@ -471,7 +471,7 @@ local function AnchorToFrame(frameToAnchorTo)
         mainFrame:SetUserPlaced(false)
     end
 
-    mainFrame:SetPoint(MoneyFlowDB.anchorPointMainFrame, frameToAnchorTo, MoneyFlowDB.anchorPointBagFrame, 0, 10)
+    mainFrame:SetPoint(MoneyFlowDB.anchorPointMainFrame, frameToAnchorTo, MoneyFlowDB.anchorPointBagFrame, 3, 0)
 
 
     return true
