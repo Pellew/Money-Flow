@@ -1,4 +1,3 @@
-## 2.0.4
-- Rettet visning af guld på tværs af characters
-- Tilføjet nye settings for tracking
-- Små performance forbedringer
+## 2.0.5
+- Updated debug function
+- Do not print when toggle OpenWithBags and AnchortoBags
