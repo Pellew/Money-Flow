@@ -1,5 +1,5 @@
 --==========================================================
--- Money Flow - Version 2.0.7
+-- Money Flow - Version 2.0.8
 --==========================================================
 -- Highlights:
 --  - NO bag hook install on login (lazy install when bags are toggled)
