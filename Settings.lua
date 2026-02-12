@@ -261,6 +261,8 @@ restoreBtn:SetScript("OnClick", function()
     MoneyFlowDB.anchorPointMainFrame      = "TOPRIGHT"
     MoneyFlowDB.anchorPointBagFrame       = "TOPLEFT"
 
+    MoneyFlowCharDB.frameSize             = { w = 300, h = 180 }
+
     -- Sync UI
     openWithBags:SetChecked(true)
     anchorToBags:SetChecked(true)

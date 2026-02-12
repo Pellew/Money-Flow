@@ -2,8 +2,9 @@
 ## Title: Money Flow
 ## Notes: Track your gold income and expenses.
 ## Author: Pellew
-## Version: 2.0.8
+## Version: 2.0.9
 ## SavedVariables: MoneyFlowDB
+## SavedVariablesPerCharacter: MoneyFlowCharDB
 
 Settings.lua
 MoneyFlow.lua

@@ -1,5 +1,5 @@
 --==========================================================
--- Money Flow - Version 2.0.8
+-- Money Flow - Version 2.0.9
 --==========================================================
 -- Highlights:
 --  - NO bag hook install on login (lazy install when bags are toggled)
@@ -14,6 +14,9 @@
 MoneyFlowDB = MoneyFlowDB or {}
 MoneyFlowDB.settingsKeys = MoneyFlowDB.settingsKeys or {}
 
+MoneyFlowCharDB = MoneyFlowCharDB or {}
+MoneyFlowCharDB.frameSize = MoneyFlowCharDB.frameSize or {}
+
 -- Default settings
 if MoneyFlowDB.settingsKeys.openWithBags == nil then
     MoneyFlowDB.settingsKeys.openWithBags = true
@@ -22,6 +25,12 @@ end
 -- Default settings
 if MoneyFlowDB.settingsKeys.anchorToBags == nil then
     MoneyFlowDB.settingsKeys.anchorToBags = true
+end
+
+if type(MoneyFlowCharDB.frameSize) ~= "table"
+    or type(MoneyFlowCharDB.frameSize.w) ~= "number"
+    or type(MoneyFlowCharDB.frameSize.h) ~= "number" then
+    MoneyFlowCharDB.frameSize = { w = 300, h = 180 }
 end
 
 
@@ -90,7 +99,9 @@ end
 -- UI: Main frame
 --==========================================================
 local mainFrame = CreateFrame("Frame", "MoneyFlowMainFrame", UIParent, "BackdropTemplate")
-mainFrame:SetSize(300, 180)
+
+
+mainFrame:SetSize(MoneyFlowCharDB.frameSize.w, MoneyFlowCharDB.frameSize.h)
 mainFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
 mainFrame:Hide()
 
@@ -100,7 +111,7 @@ tinsert(UISpecialFrames, "MoneyFlowMainFrame")
 -- Ensure visible above heavy UI (ElvUI bags can be high)
 mainFrame:SetClampedToScreen(true)
 mainFrame:SetFrameStrata("DIALOG")
-mainFrame:SetFrameLevel(1000)
+mainFrame:SetFrameLevel(1)
 
 mainFrame:SetBackdrop({
     bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
@@ -111,6 +122,10 @@ mainFrame:SetBackdrop({
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
 })
 mainFrame:SetBackdropColor(0, 0, 0, 0.9)
+
+local function ApplySavedFrameSize()
+    mainFrame:SetSize(MoneyFlowCharDB.frameSize.w, MoneyFlowCharDB.frameSize.h)
+end
 
 --==========================================================
 -- Titlebar
@@ -175,6 +190,13 @@ mainFrame:SetScript("OnDragStop", function(self) self:StopMovingOrSizing() end)
 mainFrame:SetResizable(true)
 mainFrame:SetResizeBounds(200, 150, 600, 400)
 
+-- Efter den er gjort movable/resizable:
+if mainFrame.SetUserPlaced and AnchorToBagsEnable() then
+    -- i "anchor til bags" mode vil vi IKKE have layout-local til at styre den
+    mainFrame:SetUserPlaced(false)
+end
+
+
 local resizeButton = CreateFrame("Button", nil, mainFrame)
 resizeButton:SetPoint("BOTTOMRIGHT", mainFrame, "BOTTOMRIGHT", -2, 2)
 resizeButton:SetSize(16, 16)
@@ -183,14 +205,22 @@ resizeButton:SetScript("OnMouseDown", function(_, button)
     if button == "LeftButton" and mainFrame.StartSizing then
         resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
         mainFrame:StartSizing("BOTTOMRIGHT")
-        if mainFrame.SetUserPlaced then mainFrame:SetUserPlaced(true) end
+
+        -- KUN user placed, hvis vi IKKE anchor til bags
+        if mainFrame.SetUserPlaced and not AnchorToBagsEnable() then
+            mainFrame:SetUserPlaced(true)
+        end
     end
 end)
 resizeButton:SetScript("OnMouseUp", function(_, button)
     if button == "LeftButton" then
         resizeButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
-        if mainFrame.StopMovingOrSizing then mainFrame:StopMovingOrSizing() end
+        mainFrame:StopMovingOrSizing()
     end
+
+    local w, h = mainFrame:GetSize()
+    MoneyFlowCharDB.frameSize.w = math.floor(w + 0.5)
+    MoneyFlowCharDB.frameSize.h = math.floor(h + 0.5)
 end)
 
 --==========================================================
@@ -706,6 +736,7 @@ eventFrame:SetScript("OnEvent", function(_, event)
     if event == "PLAYER_LOGIN" then
         lastMoney = GetMoney()
         RefreshUI()
+        ApplySavedFrameSize()
         -- NOTE: We do NOT install bag hooks on login (lazy mode)
         print("|cff00ff00Money Flow|r addon ready.")
     elseif event == "PLAYER_MONEY" then
