@@ -1,7 +1,7 @@
 --==========================================================
 -- Money Flow - Settings.lua (separat vindue)
 --==========================================================
-
+local addonName, MoneyFlow = ...
 --========================
 -- SavedVariables + Defaults (robust + migrering)
 --========================
@@ -30,7 +30,7 @@ local function dprint(...)
 end
 
 --==========================================================
--- Settings Frame (Popup)
+-- Settings Frame (Popup)  **why is this a global frame**
 --==========================================================
 MoneyFlowSettingsFrame = CreateFrame("Frame", "MoneyFlowSettingsFrame", UIParent, "BackdropTemplate")
 MoneyFlowSettingsFrame:SetSize(320, 330)

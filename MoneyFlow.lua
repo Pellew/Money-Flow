@@ -1,3 +1,5 @@
+local addonName, MoneyFlow = ...
+
 --==========================================================
 -- Money Flow - Version 2.0.9
 --==========================================================
@@ -33,6 +35,11 @@ if type(MoneyFlowCharDB.frameSize) ~= "table"
     MoneyFlowCharDB.frameSize = { w = 300, h = 180 }
 end
 
+if type(MoneyFlowCharDB.goldframeSize) ~= "table"
+    or type(MoneyFlowCharDB.goldframeSize.w) ~= "number"
+    or type(MoneyFlowCharDB.goldframeSize.h) ~= "number" then
+    MoneyFlowCharDB.goldframeSize = { w = 320, h = 360 }
+end
 
 --==========================================================
 -- Debug
@@ -125,7 +132,15 @@ mainFrame:SetBackdropColor(0, 0, 0, 0.9)
 
 local function ApplySavedFrameSize()
     mainFrame:SetSize(MoneyFlowCharDB.frameSize.w, MoneyFlowCharDB.frameSize.h)
+
+    local gf = MoneyFlow.goldFrame
+    if gf then
+        MoneyFlowCharDB.goldframeSize = MoneyFlowCharDB.goldframeSize or { w = 320, h = 360 }
+        gf:SetSize(MoneyFlowCharDB.goldframeSize.w, MoneyFlowCharDB.goldframeSize.h)
+    end
 end
+
+
 
 --==========================================================
 -- Titlebar
@@ -159,7 +174,7 @@ optionButton:SetSize(70, 20)
 optionButton:SetText("Options")
 optionButton:SetScript("OnClick", function()
     if not _G.MoneyFlowSettingsFrame then
-        print("|cff00ff00MoneyFlow:|r Settings frame ikke fundet (MoneyFlowSettingsFrame).")
+        print("|cff00ff00MoneyFlow:|r Settings frame not found (MoneyFlowSettingsFrame).")
         return
     end
 
@@ -266,6 +281,29 @@ resetButton:SetScript("OnEnter", function(self)
     GameTooltip:Show()
 end)
 resetButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+-- Gold info
+local goldButton = CreateFrame("BUTTON", nil, mainFrame, "GameMenuButtonTemplate")
+goldButton:SetPoint("LEFT", resetButton, "RIGHT", 10, 0)
+goldButton:SetSize(120, 30)
+goldButton:SetText("Gold info")
+goldButton:SetScript("OnClick", function()
+    local gf = MoneyFlow.goldFrame
+    if not gf then
+        print("|cff00ff00MoneyFlow:|r Gold frame not found yet.")
+        return
+    end
+
+    if gf:IsShown() then
+        gf:Hide()
+    else
+        gf:Show()
+        gf:Raise()
+        MoneyFlow:RenderGoldFrame(gf) -- render når den åbnes (nice)
+    end
+end)
+
+
 
 --==========================================================
 -- Session Tracking
@@ -737,7 +775,13 @@ eventFrame:SetScript("OnEvent", function(_, event)
         lastMoney = GetMoney()
         RefreshUI()
         ApplySavedFrameSize()
-        -- NOTE: We do NOT install bag hooks on login (lazy mode)
+        MoneyFlow:UpdateGoldInfo()
+
+        local gf = MoneyFlow.goldFrame
+        if gf then
+            MoneyFlow:RenderGoldFrame(gf)
+        end
+
         print("|cff00ff00Money Flow|r addon ready.")
     elseif event == "PLAYER_MONEY" then
         local currentMoney = GetMoney()
@@ -749,6 +793,11 @@ eventFrame:SetScript("OnEvent", function(_, event)
                 totalGoldSpent = totalGoldSpent - diff
             end
             RefreshUI()
+            MoneyFlow:UpdateGoldInfo()
+            local gf = MoneyFlow.goldFrame
+            if gf and gf:IsShown() then
+                MoneyFlow:RenderGoldFrame(gf)
+            end
         end
         lastMoney = currentMoney
     end

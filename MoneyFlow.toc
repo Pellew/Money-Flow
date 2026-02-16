@@ -7,5 +7,6 @@
 ## SavedVariablesPerCharacter: MoneyFlowCharDB
 
 Settings.lua
+Gold.lua
 MoneyFlow.lua
 
