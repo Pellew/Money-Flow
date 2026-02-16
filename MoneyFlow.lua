@@ -1,7 +1,7 @@
 local addonName, MoneyFlow = ...
 
 --==========================================================
--- Money Flow - Version 2.0.9
+-- Money Flow - Version 2.1.0
 --==========================================================
 -- Highlights:
 --  - NO bag hook install on login (lazy install when bags are toggled)
