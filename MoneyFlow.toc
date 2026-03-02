@@ -3,7 +3,7 @@
 ## X-Wago-ID:
 ## Title: Money Flow
 ## Author: Pellew
-## Version: v3.0.0
+## Version: v1.0.0
 ## Notes: Tracking of gold
 ## IconTexture: Interface\AddOns\MoneyFlow\Media\MF_icon.png
 ## SavedVariables: MoneyFlowDB, MoneyTrackDB
