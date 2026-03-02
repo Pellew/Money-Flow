@@ -16,8 +16,6 @@ Reset session data with a button or slash command
 
 Uses Blizzard UI elements for a native look
 
-No data collection, no account-wide tracking, no bloat
-
 Slash commands:
 
 /mf – Toggle the Money Flow window
