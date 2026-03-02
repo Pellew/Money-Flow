@@ -68,6 +68,23 @@ titleBar:SetScript("OnDragStart", function()
 end)
 titleBar:SetScript("OnDragStop", function()
     frame:StopMovingOrSizing()
+
+    local addon = MoneyFlow
+    local dbase = addon and addon.db
+    local main = dbase and dbase.profile and dbase.profile.MainFrame
+    if not main then
+        return
+    end
+
+    if addon:AnchorToBags() then
+        return
+    end
+
+    local point, _, relativePoint, xOfs, yOfs = frame:GetPoint(1)
+    main.MoneyFlowAnchor = point or main.MoneyFlowAnchor or "CENTER"
+    main.ParentAnchor = relativePoint or main.ParentAnchor or "CENTER"
+    main.XOffset = math.floor((xOfs or 0) + 0.5)
+    main.YOffset = math.floor((yOfs or 0) + 0.5)
 end)
 
 local resizeButton = CreateFrame("Button", nil, frame)

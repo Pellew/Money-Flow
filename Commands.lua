@@ -53,8 +53,10 @@ function MoneyFlow:SlashToggleFrame()
         return
     end
 
-    if self:AnchorToBags() and self:IsAnyBagVisible() then
-        self:ApplyBagAnchor()
+    if self:AnchorToBags() then
+        if self:IsAnyBagVisible() then
+            self:ApplyBagAnchor()
+        end
     else
         local main = self.db and self.db.profile and self.db.profile.MainFrame
         self.moneyFrame:ClearAllPoints()
