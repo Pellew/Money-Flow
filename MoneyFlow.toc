@@ -1,0 +1,44 @@
+## Interface: 120001
+## X-Curse-Project-ID:
+## X-Wago-ID:
+## Title: Money Flow
+## Author: Pellew
+## Version: v3.0.0
+## Notes: Tracking of gold
+## IconTexture: Interface\AddOns\MoneyFlow\Media\MF_icon.png
+## SavedVariables: MoneyFlowDB, MoneyTrackDB
+## OptionalDeps: Ace3, Baganator, BetterBags, ElvUI
+
+Libs\LibStub\LibStub.lua
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml
+
+Core.lua
+Utils.lua
+Database.lua
+
+Data\Session.lua
+Data\GoldTracker.lua
+
+Anchor\Providers\Registry.lua
+Anchor\Providers\Blizzard.lua
+Anchor\Providers\BetterBags.lua
+Anchor\Providers\ElvUI.lua
+Anchor\Providers\Baganator.lua
+Anchor\Manager.lua
+
+UI\MoneyFlowFrame.lua
+UI\GoldInfoFrame.lua
+UI\Format.lua
+UI\Layout.lua
+
+Options\Options.lua
+
+Events.lua
+Commands.lua
