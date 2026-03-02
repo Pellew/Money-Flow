@@ -1,4 +1,4 @@
-## 2.1.0
-- Added gold info
-    * Now you can see how much gold each character has.
+## 3.0.0
+- Brand new coding
+- New option panel
 
