@@ -1,3 +1,7 @@
+local Addon = _G.MoneyFlow
+if not Addon or type(Addon.RegisterAnchorProvider) ~= "function" then
+    return
+end
 -- Anchor/Providers/BetterBags.lua
 
 local function IsFrameObject(obj)
@@ -31,7 +35,7 @@ local function GetBagObject()
     return nil
 end
 
-MoneyFlow:RegisterAnchorProvider("BETTERBAGS", {
+Addon:RegisterAnchorProvider("BETTERBAGS", {
     GetFrame = function(_, addon)
         local bag = GetBagObject()
         if bag and IsFrameObject(bag.frame) then

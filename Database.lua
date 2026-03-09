@@ -13,6 +13,7 @@ local defaults = {
             Shown = true,
             OpenWithBags = true,
             AnchorToBags = true,
+            FrameStrata = "DIALOG",
         },
 
         GoldFrame = {

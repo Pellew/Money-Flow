@@ -1,3 +1,7 @@
+local Addon = _G.MoneyFlow
+if not Addon or type(Addon.RegisterAnchorProvider) ~= "function" then
+    return
+end
 -- Anchor/Providers/Baganator.lua
 
 local FRAME_CANDIDATES = {
@@ -71,7 +75,7 @@ local function GetFrames(addon)
     return out
 end
 
-MoneyFlow:RegisterAnchorProvider("BAGANATOR", {
+Addon:RegisterAnchorProvider("BAGANATOR", {
     GetFrames = function(_, addon)
         return GetFrames(addon)
     end,

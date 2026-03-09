@@ -136,6 +136,7 @@ function MoneyFlow:BuildGoldFrame()
     frame.resizeButton = resizeButton
 
     self.goldFrame = frame
+    self:ApplyFrameStrata()
     return frame
 end
 

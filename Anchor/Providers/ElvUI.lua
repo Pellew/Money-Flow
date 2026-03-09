@@ -1,3 +1,7 @@
+local Addon = _G.MoneyFlow
+if not Addon or type(Addon.RegisterAnchorProvider) ~= "function" then
+    return
+end
 -- Anchor/Providers/ElvUI.lua
 
 local unpack = unpack or table.unpack
@@ -43,7 +47,7 @@ local function GetBagsModule()
     return nil
 end
 
-MoneyFlow:RegisterAnchorProvider("ELVUI", {
+Addon:RegisterAnchorProvider("ELVUI", {
     GetFrame = function(_, addon)
         local bags = GetBagsModule()
         if bags and IsFrameObject(bags.BagFrame) then

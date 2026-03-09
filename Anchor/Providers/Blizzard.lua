@@ -1,6 +1,10 @@
+local Addon = _G.MoneyFlow
+if not Addon or type(Addon.RegisterAnchorProvider) ~= "function" then
+    return
+end
 -- Anchor/Providers/Blizzard.lua
 
-MoneyFlow:RegisterAnchorProvider("BLIZZARD", {
+Addon:RegisterAnchorProvider("BLIZZARD", {
     GetFrame = function(_, addon)
         if _G.ContainerFrameCombinedBags then
             return _G.ContainerFrameCombinedBags

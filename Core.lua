@@ -13,6 +13,7 @@ function MoneyFlow:OnEnable()
     self:RegisterEvent("ADDON_LOADED")
 
     self:BuildLayout()
+    self:ApplyFrameStrata()
     self:RefreshFrame()
     self:UpdateCharacterGold()
     self:RefreshGoldFrame()

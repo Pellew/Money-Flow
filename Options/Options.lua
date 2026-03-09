@@ -19,6 +19,17 @@ local providerValues = {
     MANUAL = "Manual Frame Name",
 }
 
+local strataValues = {
+    BACKGROUND = "Background",
+    LOW = "Low",
+    MEDIUM = "Medium",
+    HIGH = "High",
+    DIALOG = "Dialog",
+    FULLSCREEN = "Fullscreen",
+    FULLSCREEN_DIALOG = "Fullscreen Dialog",
+    TOOLTIP = "Tooltip",
+}
+
 function MoneyFlow:SetupOptions()
     if self.optionsCategoryID then
         return
@@ -130,6 +141,20 @@ function MoneyFlow:SetupOptions()
                         set = function(_, value)
                             self.db.profile.MainFrame.YOffset = value
                             self:ApplyBagAnchor()
+                        end,
+                    },
+                    frameLayer = {
+                        type = "select",
+                        name = "Frame Layer",
+                        desc = "Choose how high/low Money Flow is drawn in the UI.",
+                        values = strataValues,
+                        order = 9,
+                        get = function()
+                            return self.db.profile.MainFrame.FrameStrata or "DIALOG"
+                        end,
+                        set = function(_, value)
+                            self.db.profile.MainFrame.FrameStrata = value
+                            self:ApplyFrameStrata()
                         end,
                     },
                 },

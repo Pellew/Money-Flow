@@ -156,3 +156,15 @@ end)
 
 MoneyFlow.moneyFrame = frame
 MoneyFlow.titleBar = titleBar
+
+function MoneyFlow:ApplyFrameStrata()
+    local main = self.db and self.db.profile and self.db.profile.MainFrame
+    local strata = (main and main.FrameStrata) or "DIALOG"
+
+    if self.moneyFrame then
+        self.moneyFrame:SetFrameStrata(strata)
+    end
+    if self.goldFrame then
+        self.goldFrame:SetFrameStrata(strata)
+    end
+end
