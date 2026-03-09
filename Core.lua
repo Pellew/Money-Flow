@@ -1,4 +1,11 @@
-MoneyFlow = LibStub("AceAddon-3.0"):NewAddon("MoneyFlow", "AceConsole-3.0", "AceEvent-3.0")
+MoneyFlow = MoneyFlow or {}
+
+local AceAddon = LibStub and LibStub("AceAddon-3.0", true)
+if not AceAddon then
+    return
+end
+
+MoneyFlow = AceAddon:NewAddon("MoneyFlow", "AceConsole-3.0", "AceEvent-3.0")
 
 function MoneyFlow:OnInitialize()
     self:InitDB()
