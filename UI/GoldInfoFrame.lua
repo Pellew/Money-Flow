@@ -162,13 +162,62 @@ function MoneyFlow:RefreshGoldFrame()
 
             line.gold = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             line.gold:SetJustifyH("RIGHT")
-            line.gold:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -8, startY - (i - 1) * lineHeight)
+
+            line.remove = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+            line.remove:SetSize(18, 18)
+            line.remove:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, startY - (i - 1) * lineHeight + 6)
+            line.remove:SetScript("OnClick", function(button)
+                if not button.characterKey then
+                    return
+                end
+
+                StaticPopupDialogs["MONEYFLOW_CONFIRM_REMOVE_GOLD_CHARACTER"] =
+                    StaticPopupDialogs["MONEYFLOW_CONFIRM_REMOVE_GOLD_CHARACTER"] or {
+                        text = "Remove saved gold data for %s?",
+                        button1 = YES,
+                        button2 = NO,
+                        OnAccept = function(_, data)
+                            if data and data.key then
+                                MoneyFlow:RemoveGoldCharacter(data.key)
+                            end
+                        end,
+                        timeout = 0,
+                        whileDead = true,
+                        hideOnEscape = true,
+                        preferredIndex = 3,
+                    }
+
+                StaticPopup_Show(
+                    "MONEYFLOW_CONFIRM_REMOVE_GOLD_CHARACTER",
+                    button.characterName or button.characterKey,
+                    nil,
+                    { key = button.characterKey }
+                )
+            end)
+            line.remove:SetScript("OnEnter", function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetText("Remove this character from the overview.", 0.8, 0.8, 0.8)
+                GameTooltip:Show()
+            end)
+            line.remove:SetScript("OnLeave", function()
+                GameTooltip:Hide()
+            end)
 
             frame.lines[i] = line
         end
 
+        line.gold:ClearAllPoints()
+        line.gold:SetPoint(
+            "TOPRIGHT",
+            frame,
+            "TOPRIGHT",
+            frame.isPreview and -8 or -30,
+            startY - (i - 1) * lineHeight
+        )
+
         local row = rows[i]
         if row then
+            local characterName = row.name or "?"
             local color = row.class and C_ClassColor.GetClassColor(row.class)
             if color then
                 line.name:SetTextColor(color:GetRGB())
@@ -176,15 +225,25 @@ function MoneyFlow:RefreshGoldFrame()
                 line.name:SetTextColor(1, 1, 1)
             end
 
-            line.name:SetText(string.format("%s-%s", row.name or "?", row.realm or "?"))
+            line.name:SetText(characterName)
             line.gold:SetText(GetMoneyString(row.gold or 0, true) or "0")
+            line.remove.characterKey = row.key
+            line.remove.characterName = characterName
             line.name:Show()
             line.gold:Show()
+            if frame.isPreview then
+                line.remove:Hide()
+            else
+                line.remove:Show()
+            end
         else
             line.name:SetText("")
             line.gold:SetText("")
+            line.remove.characterKey = nil
+            line.remove.characterName = nil
             line.name:Hide()
             line.gold:Hide()
+            line.remove:Hide()
         end
     end
 
@@ -202,10 +261,10 @@ function MoneyFlow:ToggleGoldFrame()
         return
     end
 
-    self:RefreshGoldFrame()
-
     frame.isPinned = true
     frame.isPreview = false
+
+    self:RefreshGoldFrame()
 
     frame:SetAlpha(1)
     frame:EnableMouse(true)
@@ -280,10 +339,10 @@ function MoneyFlow:ShowGoldPreview(anchorFrame)
         return
     end
 
-    self:RefreshGoldFrame()
-
     frame.isPreview = true
     frame.isPinned = false
+
+    self:RefreshGoldFrame()
 
     frame:SetAlpha(0.96)
     frame:EnableMouse(false)

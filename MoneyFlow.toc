@@ -1,4 +1,4 @@
-## Interface: 120001
+## Interface: 120005
 ## X-Curse-Project-ID:
 ## X-Wago-ID:
 ## Title: Money Flow

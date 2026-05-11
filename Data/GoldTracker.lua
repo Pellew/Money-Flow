@@ -80,6 +80,26 @@ function MoneyFlow:ResetGoldInfo()
     end
 end
 
+function MoneyFlow:RemoveGoldCharacter(key)
+    if not key or not self.db or not self.db.global or not self.db.global.Characters then
+        return false
+    end
+
+    if not self.db.global.Characters[key] then
+        return false
+    end
+
+    self.db.global.Characters[key] = nil
+    self:RefreshGoldFrame()
+
+    local AceConfigRegistry = LibStub("AceConfigRegistry-3.0", true)
+    if AceConfigRegistry then
+        AceConfigRegistry:NotifyChange("MoneyFlow")
+    end
+
+    return true
+end
+
 function MoneyFlow:GetGoldSummaryText()
     local rows = self:GetGoldCharactersList()
     if #rows == 0 then
@@ -90,7 +110,7 @@ function MoneyFlow:GetGoldSummaryText()
     for i = 1, #rows do
         local row = rows[i]
         local moneyText = GetMoneyString(row.gold or 0, true) or "0"
-        lines[#lines + 1] = string.format("%s-%s: %s", row.name, row.realm, moneyText)
+        lines[#lines + 1] = string.format("%s: %s", row.name, moneyText)
     end
 
     lines[#lines + 1] = " "
