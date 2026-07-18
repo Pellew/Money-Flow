@@ -11,7 +11,8 @@ local anchorPoints = {
 }
 
 local providerValues = {
-    AUTO = "Auto (BetterBags -> ElvUI -> Baganator -> Blizzard -> UIParent)",
+    AUTO = "Auto (EllesmereUI -> BetterBags -> ElvUI -> Baganator -> Blizzard -> UIParent)",
+    ELLESMEREUI = "EllesmereUI Bags",
     BETTERBAGS = "BetterBags",
     ELVUI = "ElvUI",
     BAGANATOR = "Baganator",

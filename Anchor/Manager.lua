@@ -1,6 +1,6 @@
 -- Anchor/Manager.lua
 
-local PROVIDER_PRIORITY = { "BETTERBAGS", "ELVUI", "BAGANATOR", "BLIZZARD" }
+local PROVIDER_PRIORITY = { "ELLESMEREUI", "BETTERBAGS", "ELVUI", "BAGANATOR", "BLIZZARD" }
 
 function MoneyFlow:OpenWithBags()
     return self.db and self.db.profile and self.db.profile.MainFrame.OpenWithBags == true

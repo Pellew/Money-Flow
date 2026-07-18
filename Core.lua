@@ -40,7 +40,10 @@ function MoneyFlow:OnEnable()
 end
 
 function MoneyFlow:ADDON_LOADED(_, addonName)
-    if addonName == "Baganator" or addonName == "BetterBags" or addonName == "ElvUI" then
+    if addonName == "Baganator"
+        or addonName == "BetterBags"
+        or addonName == "ElvUI"
+        or addonName == "EllesmereUIBags" then
         self:InstallAllProviderHooks()
         self:HookCurrentBagFrames()
         self:SyncBagVisibility()
